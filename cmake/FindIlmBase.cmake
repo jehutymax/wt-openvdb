@@ -191,7 +191,7 @@ if(EXISTS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig.h")
   )
   string(STRIP "${_ilmbase_version_major_string}" IlmBase_VERSION_MAJOR)
 
-  file(STRINGS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig-64.h"
+  file(STRINGS "${IlmBase_INCLUDE_DIR}/${IlmBaseConfigFile}"
      _ilmbase_version_minor_string REGEX "#define ILMBASE_VERSION_MINOR "
   )
   string(REGEX REPLACE "#define ILMBASE_VERSION_MINOR" ""
