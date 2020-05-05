@@ -168,9 +168,22 @@ find_path(IlmBase_INCLUDE_DIR IlmBaseConfig.h
   PATH_SUFFIXES ${CMAKE_INSTALL_INCLUDEDIR}/OpenEXR include/OpenEXR OpenEXR
 )
 
+find_program(LSB_RELEASE_EXEC lsb_release)
+execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
+    OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+message(STATUS "Platform is ${LSB_RELEASE_ID_SHORT}")
+
 if(EXISTS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig.h")
   # Get the ILMBASE version information from the config header
-  file(STRINGS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig.h"
+  if (LSB_RELEASE_ID_SHORT STREQUAL "Fedora")
+    set(IlmBaseConfigFile "IlmBaseConfig-64.h")
+  else()
+    set(IlmBaseConfigFile "IlmBaseConfig.h")
+  endif()
+  file(STRINGS "${IlmBase_INCLUDE_DIR}/${IlmBaseConfigFile}"
     _ilmbase_version_major_string REGEX "#define ILMBASE_VERSION_MAJOR "
   )
   string(REGEX REPLACE "#define ILMBASE_VERSION_MAJOR" ""
@@ -178,7 +191,7 @@ if(EXISTS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig.h")
   )
   string(STRIP "${_ilmbase_version_major_string}" IlmBase_VERSION_MAJOR)
 
-  file(STRINGS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig.h"
+  file(STRINGS "${IlmBase_INCLUDE_DIR}/IlmBaseConfig-64.h"
      _ilmbase_version_minor_string REGEX "#define ILMBASE_VERSION_MINOR "
   )
   string(REGEX REPLACE "#define ILMBASE_VERSION_MINOR" ""
